@@ -5,9 +5,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
-  TextInput
+  TextInput,
 } from 'react-native';
-import { styles } from './addExpense.style';
+import { connect } from 'react-redux';
+import { styles } from './style/addExpense.style';
+import { saveExpenseDetails } from '../../actions/expenseAction';
 
 class AddExpense extends Component {
 
@@ -21,6 +23,7 @@ class AddExpense extends Component {
       isCategoryEmpty: false,
       isAmountEmpty: false,
       isDateEmpty: false,
+      expenseData: []
     };
   }
 
@@ -59,14 +62,36 @@ class AddExpense extends Component {
     );
   };
 
+  // Update values into async storage
+  _storeValues = (listing) => {
+    if (listing) {
+      this.props.saveExpenseDetails(listing);
+    } else {
+      Alert.alert("No values!");
+    }
+  };
+
   // Create expenses and navigate to prevoius screen  
   _onCreateExpense = () => {
     if (this.isValid()) {
-      this.props.navigation.goBack();
+      const { category, amount, date } = this.state;
+
+      // construct expense obj
+      let listing = {
+        category: category,
+        amount: amount,
+        date: date
+      };
+
+      // update values into store
+      this._storeValues(listing);
+
+      // navigate to home 
+      this.props.navigation.navigate('Home');
     } else {
       Alert.alert("Fill out all the fields");
     }
-  }
+  };
 
   render() {
     return (
@@ -101,4 +126,13 @@ class AddExpense extends Component {
   }
 }
 
-export default AddExpense;
+const mapDispatchToProps = dispatch => {
+  return {
+    saveExpenseDetails: (listing) => { dispatch(saveExpenseDetails(listing)) }
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AddExpense);
