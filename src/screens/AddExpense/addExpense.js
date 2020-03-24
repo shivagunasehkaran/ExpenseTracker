@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { styles } from './style/addExpense.style';
 import { saveExpenseDetails } from '../../actions/expenseAction';
+import DatePickerView from '../AddExpense/components/datePicker';
 
 class AddExpense extends Component {
 
@@ -20,7 +21,7 @@ class AddExpense extends Component {
       description: '',
       category: '',
       amount: '',
-      date: '',
+      date: "24-05-2020",
       isDescriptionEmpty: false,
       isCategoryEmpty: false,
       isAmountEmpty: false,
@@ -68,8 +69,7 @@ class AddExpense extends Component {
     return (
       description.length > 0 &&
       category.length > 0 &&
-      amount.length > 0 &&
-      date.length > 0
+      amount.length > 0
     );
   };
 
@@ -123,10 +123,8 @@ class AddExpense extends Component {
               onChangeText={category => this.setState({ category, isCategoryEmpty: false })}
             />
             <Text style={styles.titleText}>{'Date'} :</Text>
-            <TextInput
-              style={styles.textContainer}
-              placeholder="Enter date "
-              onChangeText={date => this.setState({ date, isAmountEmpty: false })}
+            <DatePickerView
+              onChangeDateHandler={(value) => this.setState({ date: value })}
             />
             <Text style={styles.titleText}>{'Amount'} :</Text>
             <TextInput
