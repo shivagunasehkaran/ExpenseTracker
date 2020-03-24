@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 15
   },
   titleText: {
-    margin: 10,
+    margin: 15,
     fontSize: 20,
     fontFamily: 'Avenir-Medium',
     color: '#000'

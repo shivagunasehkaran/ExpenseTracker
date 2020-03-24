@@ -17,9 +17,11 @@ class AddExpense extends Component {
     super(props);
 
     this.state = {
+      description: '',
       category: '',
       amount: '',
       date: '',
+      isDescriptionEmpty: false,
       isCategoryEmpty: false,
       isAmountEmpty: false,
       isDateEmpty: false,
@@ -29,14 +31,22 @@ class AddExpense extends Component {
 
   // validation of text inputs
   isValid = () => {
-    const { category, amount, date } = this.state;
+    const { description, category, amount, date } = this.state;
+
+    if (description.length === 0) {
+      this.setState({
+        isDescriptionEmpty: true,
+      });
+    } else {
+      this.setState({ isDescriptionEmpty: false });
+    }
 
     if (category.length === 0) {
       this.setState({
         isCategoryEmpty: true,
       });
     } else {
-      this.setState({ isMessageEmpty: false });
+      this.setState({ isCategoryEmpty: false });
     }
 
     if (amount.length === 0) {
@@ -56,6 +66,7 @@ class AddExpense extends Component {
     }
 
     return (
+      description.length > 0 &&
       category.length > 0 &&
       amount.length > 0 &&
       date.length > 0
@@ -74,10 +85,11 @@ class AddExpense extends Component {
   // Create expenses and navigate to prevoius screen  
   _onCreateExpense = () => {
     if (this.isValid()) {
-      const { category, amount, date } = this.state;
+      const { description, category, amount, date } = this.state;
 
       // construct expense obj
       let listing = {
+        description: description,
         category: category,
         amount: amount,
         date: date
@@ -98,23 +110,30 @@ class AddExpense extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <View style={styles.container}>
-            <Text style={styles.titleText}>{'Catogories'} :</Text>
+            <Text style={styles.titleText}>{'Description'} :</Text>
+            <TextInput
+              style={styles.textContainer}
+              placeholder="Enter a description "
+              onChangeText={description => this.setState({ description, isDescriptionEmpty: false })}
+            />
+            <Text style={styles.titleText}>{'Categories'} :</Text>
             <TextInput
               style={styles.textContainer}
               placeholder="Enter category "
               onChangeText={category => this.setState({ category, isCategoryEmpty: false })}
-            />
-            <Text style={styles.titleText}>{'Amount'} :</Text>
-            <TextInput
-              style={styles.textContainer}
-              placeholder="Enter amount "
-              onChangeText={amount => this.setState({ amount, isAmountEmpty: false })}
             />
             <Text style={styles.titleText}>{'Date'} :</Text>
             <TextInput
               style={styles.textContainer}
               placeholder="Enter date "
               onChangeText={date => this.setState({ date, isAmountEmpty: false })}
+            />
+            <Text style={styles.titleText}>{'Amount'} :</Text>
+            <TextInput
+              style={styles.textContainer}
+              placeholder="Enter amount "
+              keyboardType={'number-pad'}
+              onChangeText={amount => this.setState({ amount, isAmountEmpty: false })}
             />
           </View>
           <TouchableOpacity style={styles.button} onPress={this._onCreateExpense}>

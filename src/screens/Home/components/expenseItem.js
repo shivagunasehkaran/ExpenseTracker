@@ -15,15 +15,15 @@ class ExpenseItem extends Component {
                     <TouchableOpacity onPress={this.props.onPress}>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.title}>{item.category}</Text>
+                                <Text style={styles.title}>{item.description}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.amount}>{'90 RM'}</Text>
+                                <Text style={styles.amount}>RM {item.amount}</Text>
                             </View>
                         </View>
                         <View style={{ marginTop: 15, flexDirection: 'row' }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.category}>{item.amount}</Text>
+                                <Text style={styles.category}>{item.category}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={styles.date}>{item.date}</Text>
