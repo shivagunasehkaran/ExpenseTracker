@@ -10,7 +10,8 @@ class ExpenseList extends Component {
         this.state = {
             firstTime: true,
             dataSource: [],
-            isSavedData: false
+            isSavedData: false,
+            refreshing: false,
         };
     }
 
