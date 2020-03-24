@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import ExpenseItem from './expenseItem';
 import simpleStore from '../../../utils/simpleStore';
@@ -10,7 +10,20 @@ class ExpenseList extends Component {
         this.state = {
             firstTime: true,
             dataSource: [],
+            isSavedData: false
         };
+    }
+
+    componentDidMount() {
+        if (this.state.isSavedData) {
+            this.onRefresh();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.isSavedData != prevProps.isSavedData) {
+            this.onRefresh();
+        }
     }
 
     FlatListItemSeparator = () => {
@@ -33,6 +46,7 @@ class ExpenseList extends Component {
                 this.setState({
                     dataSource: parsedItems,
                     firstTime: false,
+                    isSavedData: true
                 });
             }
         } catch (error) {
@@ -40,34 +54,49 @@ class ExpenseList extends Component {
         }
     };
 
+    // pull to refresh for getting latest saved details
+    onRefresh = () => {
+        this.retrieveData().then();
+    }
+
     render() {
         const { firstTime, dataSource } = this.state;
         return (
-            <View style={styles.container}>
-                <NavigationEvents
-                    onWillFocus={() => {
-                        this.retrieveData().then();
-                    }}
-                />
-                {
-                    firstTime && (
-                        <TouchableOpacity style={styles.addExpense} onPress={this.props.onPress}>
-                            <Text style={styles.text}>{'Add Expense Details'}</Text>
-                        </TouchableOpacity>
-                    )
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                    />
                 }
-                {
-                    dataSource && (
-                        <FlatList
-                            data={dataSource}
-                            ItemSeparatorComponent={this.FlatListItemSeparator}
-                            renderItem={({ item }) =>
-                                <ExpenseItem item={item} />}
-                            keyExtractor={item => item.toString()}
-                        />
-                    )
-                }
-            </View>
+                contentContainerStyle={styles.contentContainer}
+            >
+                <View style={styles.container}>
+                    <NavigationEvents
+                        onWillFocus={() => {
+                            this.retrieveData().then();
+                        }}
+                    />
+                    {
+                        firstTime && (
+                            <TouchableOpacity style={styles.addExpense} onPress={this.props.onPress}>
+                                <Text style={styles.text}>{'Add Expense Details'}</Text>
+                            </TouchableOpacity>
+                        )
+                    }
+                    {
+                        dataSource && (
+                            <FlatList
+                                data={dataSource}
+                                ItemSeparatorComponent={this.FlatListItemSeparator}
+                                renderItem={({ item }) =>
+                                    <ExpenseItem item={item} />}
+                                keyExtractor={item => item.toString()}
+                            />
+                        )
+                    }
+                </View>
+            </ScrollView>
         );
     }
 
