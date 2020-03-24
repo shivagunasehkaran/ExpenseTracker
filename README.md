@@ -48,5 +48,10 @@ Please go ahead and play around  :)
   - react-navigation
   - react-native-datepicker
   
-  
+  ## output :
+
+  - screenshots of simulator attached
+  - screen recording of simulator is attached
+
+
 ## cheers .....
