@@ -1,39 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ActivityIndicator, FlatList } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import ExpenseItem from './expenseItem';
+import simpleStore from '../../../utils/simpleStore';
 
 class ExpenseList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            firstTime: true,
             dataSource: [],
         };
-    }
-
-    componentDidMount() {
-        const data = {
-            "expenseDetails": [
-                {
-                    "id": 1,
-                    "heading": "99 Mart",
-                    "date": "Feb 06",
-                    "categories": "Snacks",
-                    "imageURL": "https://www.getneighborly.com/cms/thumbnails/00/640x320/images/blog/NBR-CS_OUW_InsulatingOldHome_BlogHero_January_20191212.jpg",
-                },
-                {
-                    "id": 2,
-                    "heading": "KK Mart",
-                    "date": "Mar 06",
-                    "categories": "Groceries",
-                }
-            ]
-        };
-
-        this.setState({
-            loading: false,
-            dataSource: data,
-        });
     }
 
     FlatListItemSeparator = () => {
@@ -47,24 +24,49 @@ class ExpenseList extends Component {
         );
     };
 
-    render() {
-        if (this.state.loading) {
-            return (
-                <View style={styles.loader}>
-                    <ActivityIndicator size="large" color="orange" />
-                </View>
-            );
+    // retrieve data from async storage 
+    retrieveData = async () => {
+        try {
+            const jsonTextExpenseListings = await simpleStore.getItem(simpleStore.key.expenseListings);
+            if (jsonTextExpenseListings !== null) {
+                let parsedItems = JSON.parse(jsonTextExpenseListings);
+                this.setState({
+                    dataSource: parsedItems,
+                    firstTime: false,
+                });
+            }
+        } catch (error) {
+            Alert.alert(false, error.message);
         }
+    };
 
+    render() {
+        const { firstTime, dataSource } = this.state;
         return (
             <View style={styles.container}>
-                <FlatList
-                    data={this.state.dataSource.expenseDetails}
-                    ItemSeparatorComponent={this.FlatListItemSeparator}
-                    renderItem={({ item }) =>
-                        <ExpenseItem item={item} />}
-                    keyExtractor={item => item.toString()}
+                <NavigationEvents
+                    onWillFocus={() => {
+                        this.retrieveData().then();
+                    }}
                 />
+                {
+                    firstTime && (
+                        <TouchableOpacity style={styles.addExpense} onPress={this.props.onPress}>
+                            <Text style={styles.text}>{'Add Expense Details'}</Text>
+                        </TouchableOpacity>
+                    )
+                }
+                {
+                    dataSource && (
+                        <FlatList
+                            data={dataSource}
+                            ItemSeparatorComponent={this.FlatListItemSeparator}
+                            renderItem={({ item }) =>
+                                <ExpenseItem item={item} />}
+                            keyExtractor={item => item.toString()}
+                        />
+                    )
+                }
             </View>
         );
     }
@@ -75,28 +77,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    containerList: {
+    addExpense: {
         flex: 1,
-        padding: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     text: {
-        marginLeft: 12,
-        fontSize: 16,
-    },
-    photo: {
-        height: 80,
-        width: 80,
-        borderRadius: 20,
-        backgroundColor: '#000000',
-    },
-    centering: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 8,
+        fontSize: 30,
+        fontFamily: 'Avenir-Medium'
+    }
 
-    },
 });
 
 export default ExpenseList;
