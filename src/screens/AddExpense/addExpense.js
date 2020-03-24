@@ -124,6 +124,7 @@ class AddExpense extends Component {
             />
             <Text style={styles.titleText}>{'Date'} :</Text>
             <DatePickerView
+              date={this.state.date}
               onChangeDateHandler={(value) => this.setState({ date: value })}
             />
             <Text style={styles.titleText}>{'Amount'} :</Text>

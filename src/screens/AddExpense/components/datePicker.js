@@ -24,7 +24,7 @@ class DatePickerView extends Component {
                             marginLeft: 36
                         }
                     }}
-                    onDateChange={(value) => this.props.onChangeTextHandler(value)}
+                    onDateChange={(value) => this.props.onChangeDateHandler(value)}
                 />
             </>
         );
