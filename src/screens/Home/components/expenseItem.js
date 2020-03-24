@@ -15,7 +15,7 @@ class ExpenseItem extends Component {
                     <TouchableOpacity onPress={this.props.onPress}>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.title}>{item.heading}</Text>
+                                <Text style={styles.title}>{item.category}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={styles.amount}>{'90 RM'}</Text>
@@ -23,7 +23,7 @@ class ExpenseItem extends Component {
                         </View>
                         <View style={{ marginTop: 15, flexDirection: 'row' }}>
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.category}>{item.categories}</Text>
+                                <Text style={styles.category}>{item.amount}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={styles.date}>{item.date}</Text>

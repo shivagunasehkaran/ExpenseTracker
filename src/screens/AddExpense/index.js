@@ -1,1 +1,1 @@
-export { default as addExpense } from './addExpense';
+export { default } from './addExpense';
